@@ -174,49 +174,27 @@
   .wdev { left: 43.25cqw; top: 29.5cqw; width: 13.5cqw; z-index: 4; }
   .watch { position: relative; container-type: inline-size; aspect-ratio: 1; }
   .strap {
-    position: absolute; left: 26.5%; right: 26.5%; height: 68%; z-index: 0;
-    background: linear-gradient(90deg, #141416, #2b2b30 18%, #36363c 50%, #2b2b30 82%, #141416);
+    position: absolute; left: 25%; right: 25%; height: 66%; z-index: 0;
+    background: linear-gradient(90deg, #141417, #202024 22%, #202024 78%, #141417);
   }
-  .strap.top { bottom: 70%; border-radius: 7cqw 7cqw 0 0; }
-  .strap.bottom { top: 70%; border-radius: 0 0 7cqw 7cqw; }
-  .strap.top::after {
-    content: ""; position: absolute; left: -5%; right: -5%; top: 11cqw; height: 6cqw; border-radius: 1.6cqw;
-    background: linear-gradient(90deg, #18181b, #2f2f35 50%, #18181b); box-shadow: 0 .5cqw 1cqw rgba(0,0,0,.5);
-  }
-  .strap.bottom::after {
-    content: ""; position: absolute; left: 50%; top: 45cqw; width: 3.2cqw; height: 3.2cqw; margin-left: -1.6cqw; border-radius: 50%;
-    background: #0a0a0b; box-shadow: 0 8cqw 0 #0a0a0b, 0 16cqw 0 #0a0a0b;
-  }
-  .lug {
-    position: absolute; left: 24%; right: 24%; height: 16%; z-index: 1;
-    background: linear-gradient(90deg, #55555d, #b9b9c0 25%, #ececef 50%, #9d9da5 75%, #4d4d55);
-  }
-  .lug.top { top: -4.5%; border-radius: 2.6cqw 2.6cqw 0 0; } .lug.bottom { bottom: -4.5%; border-radius: 0 0 2.6cqw 2.6cqw; }
+  .strap.top { bottom: 72%; border-radius: 6cqw 6cqw 0 0; }
+  .strap.bottom { top: 72%; border-radius: 0 0 6cqw 6cqw; }
   .case {
-    position: absolute; inset: 0; z-index: 2; border-radius: 50%; padding: 3.4cqw;
-    background: conic-gradient(from 200deg, #8e8e96, #ececf0 10%, #8a8a92 22%, #4a4a52 38%, #9d9da5 55%, #f4f4f6 66%, #7a7a82 80%, #8e8e96);
-    box-shadow: 0 0 0 .35cqw rgba(0,0,0,.45), 0 3cqw 8cqw rgba(0,0,0,.7), 0 0 10cqw rgba(255,170,0,.14);
+    position: absolute; inset: 0; z-index: 2; border-radius: 50%; padding: 2cqw;
+    background: radial-gradient(circle at 35% 28%, #2c2c31, #151518 70%);
+    box-shadow: 0 0 0 .5cqw #3a3a40, 0 3cqw 8cqw rgba(0,0,0,.7);
   }
-  .case::before, .case::after {
-    content: ""; position: absolute; right: -3.2cqw; width: 4cqw; height: 11cqw; border-radius: 1.4cqw;
-    background: linear-gradient(90deg, #6b6b73, #e4e4e7 55%, #8a8a92);
+  .case::before {
+    content: ""; position: absolute; right: -2.6cqw; top: 50%; width: 3.2cqw; height: 10cqw; margin-top: -5cqw;
+    border-radius: 1.2cqw; background: linear-gradient(90deg, #26262b, #3d3d43);
   }
-  .case::before { top: 24%; } .case::after { bottom: 24%; }
-  .bezel {
-    height: 100%; border-radius: 50%; padding: 7.5cqw;
-    background:
-      repeating-conic-gradient(rgba(255,255,255,.85) 0 1deg, transparent 1deg 30deg),
-      repeating-conic-gradient(rgba(255,255,255,.3) 0 .5deg, transparent .5deg 6deg),
-      radial-gradient(circle, #1d1d21 60%, #0d0d0f);
-    box-shadow: inset 0 0 0 .5cqw rgba(0,0,0,.6);
-  }
-  .display {
-    position: relative; height: 100%; border-radius: 50%; overflow: hidden; background: #000;
-    box-shadow: 0 0 0 2.6cqw #0d0d0f;
-  }
+  .bezel { height: 100%; border-radius: 50%; padding: 2.8cqw; background: #050506; }
+  .display { position: relative; height: 100%; border-radius: 50%; overflow: hidden; background: #000; }
   .display::after {
     content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; z-index: 4;
-    background: linear-gradient(140deg, rgba(255,255,255,.18), rgba(255,255,255,.04) 35%, transparent 52%);
+    background:
+      radial-gradient(circle, transparent 64%, rgba(0,0,0,.4) 100%),
+      linear-gradient(140deg, rgba(255,255,255,.1), transparent 38%);
   }
   .wfeed { position: absolute; left: 0; right: 0; top: 22%; aspect-ratio: 978 / 466; }
   .wfeed video { width: 100%; height: 100%; object-fit: cover; }
@@ -412,7 +390,7 @@
 
         <div class="dev wdev">
           <div class="watch">
-            <i class="strap top"></i><i class="strap bottom"></i><i class="lug top"></i><i class="lug bottom"></i>
+            <i class="strap top"></i><i class="strap bottom"></i>
             <div class="case"><div class="bezel"><div class="display">
               <div class="wfeed"><video src="img/live.mp4" poster="img/live-poster.jpg" muted loop playsinline autoplay preload="auto"></video></div>
               <span class="wb vid">VID</span>
@@ -529,7 +507,7 @@
           <p>Live preview and a shutter on any Wear OS watch. The button turns red while you record. Works away from Wi‑Fi.</p>
         </div>
         <div class="watch">
-          <i class="strap top"></i><i class="strap bottom"></i><i class="lug top"></i><i class="lug bottom"></i>
+          <i class="strap top"></i><i class="strap bottom"></i>
           <div class="case"><div class="bezel"><div class="display">
             <div class="wfeed"><video src="img/live.mp4" poster="img/live-poster.jpg" muted loop playsinline autoplay preload="metadata"></video></div>
             <span class="wb vid">VID</span>
