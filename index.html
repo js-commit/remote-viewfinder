@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Remote Viewfinder: your phone's camera on your watch or any screen</title>
-<meta name="description" content="See your phone's own camera app live on a Wear OS watch or any browser on your Wi-Fi, and hit record from across the room. Free, no account, nothing leaves your network.">
-<meta name="theme-color" content="#0e1830">
+<title>Remote Viewfinder: any screen is your Android camera monitor</title>
+<meta name="description" content="Film yourself with your Android phone and watch the shot live on your iPad, laptop or any browser. Tap to record. Free, no account.">
+<meta name="theme-color" content="#08080a">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://js-commit.github.io/remote-viewfinder/">
-<meta property="og:title" content="Remote Viewfinder">
-<meta property="og:description" content="Your phone's camera app, live on your watch or any browser. Frame the shot and hit record from across the room.">
+<meta property="og:title" content="Remote Viewfinder: any screen is your camera monitor">
+<meta property="og:description" content="Film with your Android phone. Watch the shot live on your iPad or laptop, and tap to record.">
 <meta property="og:image" content="https://js-commit.github.io/remote-viewfinder/img/social-preview.jpg">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -19,21 +19,19 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700;800&display=swap" rel="stylesheet">
 
 <style>
   :root {
-    --bg: #0b1428;
-    --bg-2: #0e1a33;
-    --panel: #13213f;
-    --panel-2: #182a4f;
-    --line: rgba(255, 255, 255, 0.09);
-    --text: #eef2fa;
-    --muted: #9fb0cf;
+    --bg: #08080a;
+    --bg-2: #101013;
+    --line: rgba(255, 255, 255, 0.08);
+    --text: #f4f4f5;
+    --muted: #a1a1aa;
     --amber: #ffb300;
-    --amber-ink: #1a1200;
-    --radius: 18px;
-    --max: 1120px;
+    --orange: #ff7a1a;
+    --rec: #ff3b30;
+    --max: 1180px;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -41,194 +39,261 @@
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font: 16px/1.6 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font: 17px/1.6 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
-  img, video { display: block; max-width: 100%; height: auto; }
-  a { color: var(--amber); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.88em; }
-  code { background: rgba(255,255,255,0.07); padding: 0.1em 0.4em; border-radius: 6px; }
-  pre {
-    background: #08101f; border: 1px solid var(--line); border-radius: 12px;
-    padding: 14px 16px; overflow-x: auto; line-height: 1.55; margin: 12px 0 0;
-  }
-  pre code { background: none; padding: 0; }
+  img, video { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  code { font: 0.86em ui-monospace, SFMono-Regular, Menlo, monospace; background: rgba(255,255,255,.07); padding: .1em .4em; border-radius: 6px; }
+  pre { font: 0.82rem/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; background: #000; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; overflow-x: auto; margin: 10px 0; }
 
   .wrap { max-width: var(--max); margin: 0 auto; padding: 0 20px; }
-  section { padding: 88px 0; }
-  .eyebrow {
-    display: inline-block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em;
-    text-transform: uppercase; color: var(--amber); margin-bottom: 14px;
+  h1, h2, h3 { font-family: "Inter Tight", Inter, sans-serif; letter-spacing: -0.035em; line-height: 1.02; margin: 0; }
+  h2 { font-size: clamp(2rem, 4.6vw, 3.4rem); font-weight: 800; }
+  h3 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; }
+  .grad {
+    background: linear-gradient(100deg, #ffd166 0%, var(--amber) 35%, var(--orange) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  h1, h2, h3 { line-height: 1.15; margin: 0; letter-spacing: -0.02em; }
-  h1 { font-size: clamp(2.2rem, 5.4vw, 3.9rem); font-weight: 800; }
-  h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 800; }
-  h3 { font-size: 1.12rem; font-weight: 700; }
-  .lede { font-size: clamp(1.05rem, 1.6vw, 1.22rem); color: var(--muted); max-width: 40em; }
-  .section-head { max-width: 46rem; margin-bottom: 44px; }
-  .section-head p { color: var(--muted); margin: 14px 0 0; font-size: 1.08rem; }
-  .accent { color: var(--amber); }
+  .muted { color: var(--muted); }
+  section { padding: 120px 0; }
 
   /* Buttons */
   .btn {
-    display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px;
-    border-radius: 999px; font-weight: 700; font-size: 1rem; line-height: 1;
-    transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 16px 26px; border-radius: 999px; font-weight: 600; font-size: 1.02rem; line-height: 1;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
   }
-  .btn:hover { text-decoration: none; transform: translateY(-1px); }
-  .btn-primary { background: var(--amber); color: var(--amber-ink); }
-  .btn-primary:hover { background: #ffc233; }
-  .btn-ghost { border: 1px solid var(--line); color: var(--text); background: rgba(255,255,255,0.03); }
-  .btn-ghost:hover { border-color: rgba(255,255,255,0.25); }
-  .btn svg { width: 18px; height: 18px; flex: none; }
-  .btn-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
-  .fine { color: var(--muted); font-size: 0.88rem; margin-top: 14px; }
+  .btn svg { width: 19px; height: 19px; flex: none; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--amber); color: #140d00; box-shadow: 0 10px 40px -10px rgba(255,179,0,.6); }
+  .btn-primary:hover { background: #ffc233; box-shadow: 0 14px 50px -10px rgba(255,179,0,.75); }
+  .btn-ghost { color: var(--text); background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1px var(--line); }
+  .btn-ghost:hover { background: rgba(255,255,255,.1); }
 
   /* Nav */
   header {
-    position: sticky; top: 0; z-index: 10;
-    background: rgba(11, 20, 40, 0.82); backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(8, 8, 10, .72); backdrop-filter: saturate(160%) blur(14px);
+    -webkit-backdrop-filter: saturate(160%) blur(14px); border-bottom: 1px solid var(--line);
   }
-  .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-  .brand { display: flex; align-items: center; gap: 10px; color: var(--text); font-weight: 700; }
-  .brand:hover { text-decoration: none; }
-  .brand img { width: 30px; height: 30px; border-radius: 8px; }
-  .nav-links { display: flex; align-items: center; gap: 26px; }
-  .nav-links a:not(.btn) { color: var(--muted); font-weight: 500; font-size: 0.95rem; }
-  .nav-links a:not(.btn):hover { color: var(--text); text-decoration: none; }
-  .nav-links .btn { padding: 10px 16px; font-size: 0.92rem; }
-  @media (max-width: 760px) { .nav-links a:not(.btn) { display: none; } }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 62px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.01em; }
+  .brand img { width: 28px; height: 28px; border-radius: 7px; }
+  .nav .btn { padding: 10px 18px; font-size: .92rem; }
 
   /* Hero */
-  .hero {
-    padding: 72px 0 40px;
+  .hero { position: relative; padding: 64px 0 40px; text-align: center; overflow: hidden; }
+  .hero::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
     background:
-      radial-gradient(900px 460px at 85% -10%, rgba(255, 179, 0, 0.13), transparent 60%),
-      radial-gradient(800px 500px at 0% 0%, rgba(60, 100, 200, 0.22), transparent 60%);
+      radial-gradient(60% 45% at 50% 72%, rgba(255,150,0,.22), transparent 70%),
+      radial-gradient(40% 30% at 50% 0%, rgba(255,255,255,.06), transparent 70%);
   }
-  .hero-grid { display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center; }
-  .hero h1 .accent { display: inline; }
-  .hero .lede { margin-top: 20px; }
-  .hero-shot {
-    border-radius: 22px; overflow: hidden; border: 1px solid var(--line);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255,255,255,0.02);
+  .pill {
+    display: inline-flex; align-items: center; gap: 9px; padding: 7px 14px 7px 12px; border-radius: 999px;
+    font-size: .88rem; font-weight: 500; color: #e4e4e7; background: rgba(255,255,255,.05);
+    box-shadow: inset 0 0 0 1px var(--line);
   }
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
-  .chip {
-    font-size: 0.82rem; font-weight: 600; color: var(--muted);
-    border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px;
+  .rec-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rec); box-shadow: 0 0 0 4px rgba(255,59,48,.18); animation: blink 2s ease-in-out infinite; }
+  .hero h1 { font-size: clamp(2.7rem, 7.4vw, 5.6rem); font-weight: 800; margin: 24px auto 0; max-width: 12ch; }
+  .lede { font-size: clamp(1.08rem, 1.9vw, 1.3rem); color: var(--muted); max-width: 36rem; margin: 22px auto 0; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 32px; }
+  .fine { font-size: .9rem; color: var(--muted); margin-top: 16px; }
+
+  /* Device stage: everything scales with the stage width */
+  .stage-wrap { position: relative; max-width: 1240px; margin: 56px auto 0; padding: 0 20px; }
+  .stage { position: relative; container-type: inline-size; aspect-ratio: 100 / 49; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .stage::after {
+    content: ""; position: absolute; left: 6%; right: 6%; bottom: -1%; height: 8%;
+    background: radial-gradient(closest-side, rgba(0,0,0,.85), transparent); z-index: 0;
+  }
+  .dev { position: absolute; container-type: inline-size; z-index: 1; }
+  .screen { position: relative; background: #000; overflow: hidden; }
+  .feed { position: relative; width: 100%; aspect-ratio: 1036 / 466; }
+  .feed video { width: 100%; height: 100%; object-fit: cover; }
+  .viewer { position: absolute; inset: 0; display: grid; place-items: center; background: #000; }
+  .live {
+    position: absolute; top: 3.2cqw; left: 3.2cqw; display: flex; align-items: center; gap: .9cqw;
+    font: 700 2.3cqw/1 Inter, sans-serif; letter-spacing: .08em; color: #fff;
+    background: rgba(255,255,255,.12); padding: 1cqw 1.6cqw; border-radius: 99px;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  }
+  .live::before { content: ""; width: 1.3cqw; height: 1.3cqw; border-radius: 50%; background: var(--rec); animation: blink 2s ease-in-out infinite; }
+  .tap {
+    position: absolute; left: 19.3%; top: 50%; width: 11%; aspect-ratio: 1; border-radius: 50%;
+    background: rgba(255,255,255,.5); box-shadow: 0 0 0 2px rgba(255,255,255,.7);
+    transform: translate(-50%, -50%) scale(.3); opacity: 0; pointer-events: none;
+  }
+  .tap.on { animation: tap .8s ease-out; }
+  .label {
+    position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap;
+    font-size: clamp(.72rem, 1.05vw, .88rem); font-weight: 500; color: var(--muted);
   }
 
-  /* Feature cards */
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-  .card {
-    background: linear-gradient(180deg, var(--panel), var(--bg-2));
-    border: 1px solid var(--line); border-radius: var(--radius); padding: 26px;
+  /* Laptop */
+  .laptop { left: 18cqw; top: 0; width: 64cqw; z-index: 1; }
+  .laptop .lid {
+    padding: 2.4cqw 1.7cqw 1.7cqw; border-radius: 2.6cqw 2.6cqw .6cqw .6cqw;
+    background: #0c0c0e; box-shadow: 0 0 0 .22cqw #3a3a40, 0 40px 80px -20px rgba(0,0,0,.8);
+    position: relative;
   }
-  .card p { color: var(--muted); margin: 10px 0 0; }
-  .icon {
-    width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
-    background: rgba(255, 179, 0, 0.12); color: var(--amber); margin-bottom: 18px;
+  .laptop .lid::before { content: ""; position: absolute; top: .9cqw; left: 50%; width: .7cqw; height: .7cqw; margin-left: -.35cqw; border-radius: 50%; background: #1f2937; }
+  .laptop .screen { aspect-ratio: 16 / 10; border-radius: .5cqw; display: flex; flex-direction: column; }
+  .bar { flex: none; height: 4.2cqw; display: flex; align-items: center; gap: .8cqw; padding: 0 1.6cqw; background: #1c1c1f; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .bar i { width: 1.1cqw; height: 1.1cqw; border-radius: 50%; background: #3f3f46; }
+  .bar i:nth-child(1) { background: #ff5f57; } .bar i:nth-child(2) { background: #febc2e; } .bar i:nth-child(3) { background: #28c840; }
+  .bar span {
+    margin: 0 auto; transform: translateX(-2cqw); font: 500 1.5cqw/1 Inter, sans-serif; color: #a1a1aa;
+    background: #2a2a2e; padding: .8cqw 6cqw; border-radius: 99px;
   }
-  .icon svg { width: 22px; height: 22px; }
+  .laptop .viewer { position: relative; inset: auto; flex: 1; }
+  .laptop .live { top: 2cqw; left: 2cqw; font-size: 1.5cqw; padding: .7cqw 1.1cqw; gap: .6cqw; }
+  .laptop .live::before { width: .9cqw; height: .9cqw; }
+  .laptop .base {
+    position: relative; height: 2.6cqw; margin: 0 -9cqw;
+    background: linear-gradient(#4b4b52, #232327 60%, #141416);
+    border-radius: .3cqw .3cqw 4cqw 4cqw / .3cqw .3cqw 2.2cqw 2.2cqw;
+  }
+  .laptop .base::before { content: ""; position: absolute; left: 50%; top: 0; width: 16cqw; height: 1cqw; margin-left: -8cqw; background: #18181b; border-radius: 0 0 1cqw 1cqw; }
 
-  /* Modes */
-  .modes { display: grid; grid-template-columns: 1fr; gap: 20px; }
-  @media (min-width: 900px) { .modes { grid-template-columns: 1fr 1fr; } }
-  .mode {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 24px;
-    padding: 28px; display: flex; flex-direction: column;
+  /* iPad */
+  .ipad { left: 1cqw; top: 17.5cqw; width: 38cqw; z-index: 2; }
+  .ipad .body {
+    padding: 3.6cqw; border-radius: 6.4cqw; background: #0c0c0e;
+    box-shadow: 0 0 0 .5cqw #3a3a40, 0 50px 90px -20px rgba(0,0,0,.85);
   }
-  .mode-visual {
-    height: 300px; display: grid; place-items: center; margin-bottom: 26px;
-    background: radial-gradient(closest-side, rgba(255,179,0,0.08), transparent), #0a1324;
-    border-radius: 16px; border: 1px solid var(--line); overflow: hidden; padding: 20px;
-  }
-  .watch-img { width: 250px; max-width: 80%; border-radius: 50%; box-shadow: 0 0 0 10px #1d2433, 0 0 0 12px #2b3446, 0 20px 50px rgba(0,0,0,.6); }
-  .tablet {
-    width: 100%; max-width: 440px; padding: 12px; border-radius: 22px; background: #1b2232;
-    box-shadow: 0 0 0 2px #2b3446, 0 20px 50px rgba(0,0,0,.6);
-  }
-  .tablet img { border-radius: 10px; }
-  .mode ul { margin: 16px 0 0; padding: 0; list-style: none; color: var(--muted); }
-  .mode li { position: relative; padding-left: 24px; margin: 9px 0; }
-  .mode li::before {
-    content: ""; position: absolute; left: 4px; top: 0.62em; width: 8px; height: 8px;
-    border-radius: 50%; background: var(--amber);
-  }
-  .mode .tag { font-size: 0.8rem; font-weight: 600; color: var(--amber); letter-spacing: .06em; text-transform: uppercase; }
-  .mode h3 { font-size: 1.45rem; margin-top: 6px; }
-  .note { margin-top: 22px; color: var(--muted); font-size: 0.95rem; }
+  .ipad .screen { aspect-ratio: 10 / 7; border-radius: 3cqw; }
+  .ipad .label { top: calc(100% + 2.4cqw); }
 
-  /* Demo */
-  .demo { background: var(--bg-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .demo-frame {
-    border-radius: 18px; overflow: hidden; border: 1px solid var(--line);
-    background: #000; box-shadow: 0 30px 80px rgba(0,0,0,.5);
+  /* Phone (the camera) */
+  .phone { left: 63cqw; top: 20cqw; width: 35cqw; z-index: 3; }
+  .phone .body {
+    position: relative; z-index: 1; padding: 2.4cqw; border-radius: 8cqw; background: #0c0c0e;
+    box-shadow: 0 0 0 .6cqw #3a3a40, 0 50px 90px -20px rgba(0,0,0,.85);
   }
-  .demo-frame video { width: 100%; }
-  .caption { color: var(--muted); font-size: 0.92rem; margin-top: 14px; text-align: center; }
+  .phone .screen { border-radius: 5.8cqw; }
+  .phone .screen::after { content: ""; position: absolute; left: 2.6cqw; top: 50%; width: 2cqw; height: 2cqw; margin-top: -1cqw; border-radius: 50%; background: #050505; box-shadow: 0 0 0 .3cqw #111; }
+  .phone .tripod { display: block; width: 46cqw; margin: -1cqw auto 0; position: relative; }
+  .phone .label { top: calc(100% + 1cqw); }
+  .stage .label b { color: var(--text); font-weight: 600; }
+
+  /* Features */
+  .head { max-width: 40rem; }
+  .head p { color: var(--muted); font-size: 1.15rem; margin: 18px 0 0; }
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 56px; }
+  .feature {
+    padding: 30px; border-radius: 24px; background: linear-gradient(180deg, #131316, #0c0c0e);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .feature p { color: var(--muted); margin: 10px 0 0; font-size: 1rem; }
+  .ico {
+    width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; margin-bottom: 22px;
+    color: var(--amber); background: rgba(255,179,0,.1); box-shadow: inset 0 0 0 1px rgba(255,179,0,.2);
+  }
+  .ico svg { width: 22px; height: 22px; }
+
+  /* Watch */
+  .watch-sec { padding-top: 0; }
+  .watch-card {
+    display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; gap: 40px;
+    border-radius: 32px; padding: 64px; overflow: hidden; position: relative;
+    background: radial-gradient(70% 90% at 85% 50%, rgba(255,150,0,.14), transparent 70%), #0e0e11;
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .tag { display: inline-block; font-size: .8rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--amber); margin-bottom: 16px; }
+  .watch-card p { color: var(--muted); font-size: 1.12rem; margin: 18px 0 0; max-width: 26rem; }
+  .watch { position: relative; width: min(300px, 100%); margin: 0 auto; aspect-ratio: 1; }
+  .watch::before, .watch::after {
+    content: ""; position: absolute; left: 22%; right: 22%; height: 40%; z-index: 0;
+    background: linear-gradient(90deg, #1a1a1d, #2a2a2e 50%, #1a1a1d);
+  }
+  .watch::before { top: -16%; height: 32%; -webkit-mask-image: linear-gradient(to top, #000 50%, transparent); mask-image: linear-gradient(to top, #000 50%, transparent); }
+  .watch::after { bottom: -16%; height: 32%; -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent); mask-image: linear-gradient(to bottom, #000 50%, transparent); }
+  .watch .case {
+    position: relative; z-index: 1; width: 100%; height: 100%; border-radius: 50%; padding: 6%;
+    background: radial-gradient(circle at 30% 25%, #3a3a40, #121214 70%);
+    box-shadow: 0 0 0 3px #26262a, 0 40px 80px -20px rgba(0,0,0,.9);
+  }
+  .watch .case::before, .watch .case::after { content: ""; position: absolute; right: -4%; width: 6%; height: 13%; border-radius: 4px; background: #2a2a2e; }
+  .watch .case::before { top: 24%; } .watch .case::after { bottom: 24%; }
+  .watch img { width: 100%; height: 100%; border-radius: 50%; }
 
   /* Steps */
-  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; counter-reset: step; }
-  .step { border-top: 2px solid var(--amber); padding-top: 22px; }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 56px; counter-reset: s; }
+  .step { counter-increment: s; }
   .step::before {
-    counter-increment: step; content: counter(step);
-    display: block; font-size: 2.4rem; font-weight: 800; color: var(--amber); line-height: 1; margin-bottom: 14px;
+    content: counter(s); display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+    font: 700 1.1rem/1 "Inter Tight", sans-serif; color: #140d00; background: var(--amber); margin-bottom: 22px;
   }
   .step p { color: var(--muted); margin: 8px 0 0; }
 
-  /* Install */
-  .install { display: grid; grid-template-columns: 1fr; gap: 20px; }
-  @media (min-width: 900px) { .install { grid-template-columns: 1fr 1fr; } }
-  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 30px; min-width: 0; }
-  .panel h3 { font-size: 1.3rem; }
-  .panel ol { padding-left: 1.25em; margin: 16px 0 0; color: var(--muted); }
-  .panel li { margin: 10px 0; padding-left: 4px; }
-  .panel li strong { color: var(--text); }
-  .panel .btn { margin-top: 20px; }
-  .req { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 20px; }
-  .req div { background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
-  .req b { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--amber); margin-bottom: 4px; }
-  .req span { color: var(--muted); font-size: 0.95rem; }
+  /* Download */
+  .dl {
+    text-align: center; border-radius: 36px; padding: 88px 24px; position: relative; overflow: hidden;
+    background: radial-gradient(60% 80% at 50% 0%, rgba(255,160,0,.22), transparent 70%), #0e0e11;
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .dl h2 { max-width: 14ch; margin: 0 auto; }
+  .dl .fine a { text-decoration: underline; text-underline-offset: 3px; }
+  .help { max-width: 40rem; margin: 40px auto 0; text-align: left; }
+  .help summary { justify-content: center; color: var(--muted); font-weight: 500; font-size: .98rem; }
+  .help summary::after { font-size: 1.1rem; }
+  .help h3 { font-size: 1.02rem; margin: 22px 0 6px; }
+  .help ol { margin: 0; padding-left: 1.2em; color: var(--muted); font-size: .95rem; }
+  .help li { margin: 6px 0; }
+  .help b { color: var(--text); font-weight: 600; }
 
   /* FAQ */
-  .faq { max-width: 52rem; }
-  details { border-bottom: 1px solid var(--line); padding: 18px 0; }
-  summary {
-    cursor: pointer; font-weight: 600; font-size: 1.05rem; list-style: none;
-    display: flex; justify-content: space-between; gap: 16px;
-  }
+  .faq { max-width: 46rem; margin-top: 40px; }
+  details { border-bottom: 1px solid var(--line); }
+  .faq details { padding: 20px 0; }
+  summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; font-weight: 600; font-size: 1.05rem; }
   summary::-webkit-details-marker { display: none; }
-  summary::after { content: "+"; color: var(--amber); font-size: 1.4rem; line-height: 1; }
-  details[open] summary::after { content: "–"; }
-  details p { color: var(--muted); margin: 12px 0 0; }
+  summary::after { content: "+"; color: var(--amber); font-size: 1.4rem; line-height: 1; font-weight: 400; }
+  details[open] > summary::after { content: "−"; }
+  details > p { color: var(--muted); margin: 10px 0 0; }
+  .help details { border: 0; }
 
-  /* CTA + footer */
-  .cta {
-    text-align: center; border-radius: 28px; padding: 64px 24px;
-    background: radial-gradient(600px 300px at 50% 0%, rgba(255,179,0,0.16), transparent 70%), var(--panel);
-    border: 1px solid var(--line);
+  footer { border-top: 1px solid var(--line); padding: 32px 0; color: var(--muted); font-size: .9rem; }
+  .foot { display: flex; flex-wrap: wrap; gap: 14px 24px; justify-content: space-between; align-items: center; }
+  .foot nav { display: flex; gap: 22px; flex-wrap: wrap; }
+  .foot a:hover { color: var(--text); }
+
+  @keyframes blink { 50% { opacity: .35; } }
+  @keyframes tap {
+    0% { opacity: .95; transform: translate(-50%, -50%) scale(.35); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
   }
-  .cta .btn-row { justify-content: center; }
-  .cta p { color: var(--muted); max-width: 34rem; margin: 14px auto 0; }
-  footer { border-top: 1px solid var(--line); padding: 36px 0; color: var(--muted); font-size: 0.9rem; }
-  .foot { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; }
-  .foot nav { display: flex; gap: 20px; flex-wrap: wrap; }
-  .foot a { color: var(--muted); }
 
+  /* Tablet and phone widths */
+  @media (max-width: 900px) {
+    section { padding: 88px 0; }
+    .features, .steps { grid-template-columns: 1fr; }
+    .steps { gap: 28px; }
+    .watch-card { grid-template-columns: 1fr; padding: 44px 28px 80px; text-align: center; }
+    .watch-card p { margin-left: auto; margin-right: auto; }
+    .watch { width: min(240px, 70%); margin-top: 40px; }
+  }
   @media (max-width: 640px) {
-    section { padding: 64px 0; }
-    .hero { padding-top: 44px; }
-    .btn { width: 100%; justify-content: center; }
-    .nav-links .btn { width: auto; }
-    .mode-visual { height: 240px; }
-    .panel, .mode { padding: 22px; }
+    body { font-size: 16px; }
+    .hero { padding-top: 56px; }
+    .cta .btn { width: 100%; }
+    .stage-wrap { margin-top: 48px; padding: 0 16px; }
+    .wrap { padding: 0 16px; }
+    .stage { aspect-ratio: 100 / 96; }
+    .laptop { left: 6cqw; width: 88cqw; }
+    .ipad { left: 0; top: 46cqw; width: 54cqw; }
+    .phone { left: 46cqw; top: 56cqw; width: 54cqw; }
+    .phone .tripod { width: 36cqw; }
+    .label { font-size: .72rem; }
+    .feature { padding: 24px; }
+    .dl { padding: 64px 20px; border-radius: 28px; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
+    .rec-dot, .live::before { animation: none; }
     .btn { transition: none; }
   }
 </style>
@@ -238,305 +303,183 @@
 <header>
   <div class="wrap nav">
     <a class="brand" href="#top"><img src="img/icon-512.png" alt="">Remote Viewfinder</a>
-    <nav class="nav-links">
-      <a href="#how">How it works</a>
-      <a href="#install">Install</a>
-      <a href="#faq">FAQ</a>
-      <a class="btn btn-primary" href="#install">Download</a>
-    </nav>
+    <a class="btn btn-primary" href="#download">Download</a>
   </div>
 </header>
 
 <main id="top">
 
-  <!-- Hero -->
   <section class="hero">
-    <div class="wrap hero-grid">
-      <div>
-        <span class="eyebrow">For creators who film themselves</span>
-        <h1>See your phone's camera <span class="accent">from across the room.</span></h1>
-        <p class="lede">
-          Remote Viewfinder puts your phone's own camera app, live, on your Wear OS watch or
-          on any browser on your Wi-Fi. Frame the shot, check yourself in it, and hit record
-          without walking back to the phone.
-        </p>
-        <div class="btn-row">
-          <a class="btn btn-primary" href="https://github.com/js-commit/remote-viewfinder/releases/latest/download/remote-viewfinder-phone.apk">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
-            Download for Android
-          </a>
-          <a class="btn btn-ghost" href="#demo">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.6-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>
-            Watch the demo
-          </a>
-        </div>
-        <div class="chips">
-          <span class="chip">Free</span>
-          <span class="chip">No account</span>
-          <span class="chip">Works with your stock camera app</span>
-          <span class="chip">Any Wear OS watch</span>
-          <span class="chip">Any browser</span>
-        </div>
-      </div>
-      <div class="hero-shot">
-        <img src="img/01-live-on-your-wrist.webp" width="1920" height="1080"
-             alt="Samsung Camera on a Galaxy Z Fold, with the same live picture mirrored on a round Wear OS watch">
-      </div>
-    </div>
-  </section>
-
-  <!-- Why -->
-  <section>
     <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">Why it's different</span>
-        <h2>Keep the camera you already shoot with.</h2>
-        <p>Other remote apps replace your camera with their own, and you lose what you paid for
-           in a flagship phone. Remote Viewfinder mirrors the real camera app instead.</p>
+      <span class="pill"><span class="rec-dot"></span>For YouTubers who film themselves</span>
+      <h1>Any screen is your <span class="grad">camera monitor.</span></h1>
+      <p class="lede">Film with your Android phone. Watch the shot live on your iPad or laptop, and tap to hit record.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://github.com/js-commit/remote-viewfinder/releases/latest/download/remote-viewfinder-phone.apk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download for Android
+        </a>
       </div>
-      <div class="cards">
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
-          <h3>Your camera app, untouched</h3>
-          <p>Samsung Camera, Google Camera, Pro Video. Keep the phone's processing,
-             stabilization, lens switching and modes, because it is the real app you're seeing.</p>
-        </div>
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="6"/><path d="M9 6 9.6 2h4.8L15 6M9 18l.6 4h4.8l.6-4"/></svg></div>
-          <h3>Any Wear OS watch</h3>
-          <p>Not only Galaxy or Pixel watches. The watch shows a live preview and its shutter
-             works like a Bluetooth selfie-stick remote.</p>
-        </div>
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-          <h3>Any screen on your Wi-Fi</h3>
-          <p>iPad, laptop or a spare phone. Open a link and the picture appears, sharp and
-             low-latency. Tap the picture to tap the phone: record, focus, zoom.</p>
-        </div>
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
-          <h3>Stays on your network</h3>
-          <p>No account, no cloud, no analytics. The picture goes straight from your phone to
-             your watch or screen and nowhere else.</p>
-        </div>
-      </div>
+      <p class="fine">Free · No account · Android 11+</p>
     </div>
-  </section>
 
-  <!-- Modes -->
-  <section id="how" style="padding-top: 0">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">Two ways to watch</span>
-        <h2>On your wrist, or on a big screen.</h2>
-        <p>Pick one per session.</p>
-      </div>
-      <div class="modes">
-        <div class="mode">
-          <div class="mode-visual">
-            <img class="watch-img" src="img/01-live-viewfinder.webp" width="1000" height="1000"
-                 alt="Wear OS watch showing the phone's camera preview with a big shutter button">
-          </div>
-          <span class="tag">Wear OS watch</span>
-          <h3>A viewfinder on your wrist</h3>
-          <ul>
-            <li>Start a Photo or Video session, or your last-used mode such as Pro Video, from the watch.</li>
-            <li>A live preview over Bluetooth, enough to frame the shot.</li>
-            <li>The big button is the shutter: it takes the photo or starts and stops recording,
-                and it turns red while the phone records.</li>
-            <li>Works away from Wi-Fi: the phone and watch talk directly.</li>
-          </ul>
-        </div>
-        <div class="mode">
-          <div class="mode-visual">
-            <div class="tablet">
-              <img src="img/02-phone-camera-while-streaming.webp" width="1920" height="1080"
-                   alt="The phone's camera app as it appears in the browser viewer">
+    <div class="stage-wrap">
+      <div class="stage" role="img" aria-label="An Android phone on a tripod running its camera app, with the same live picture on an iPad and a laptop browser">
+        <div class="dev laptop">
+          <div class="lid">
+            <div class="screen">
+              <div class="bar"><i></i><i></i><i></i><span>Remote Viewfinder</span></div>
+              <div class="viewer">
+                <div class="feed"><video src="img/live.mp4" poster="img/live-poster.jpg" muted loop playsinline autoplay preload="auto"></video></div>
+                <span class="live">LIVE</span>
+              </div>
             </div>
           </div>
-          <span class="tag">Browser · iPad, laptop, TV</span>
-          <h3>A monitor anywhere in the room</h3>
-          <ul>
-            <li>Scan the QR code on the phone or open its link. No app needed on the viewer.</li>
-            <li>Hardware H.264 video, up to 1080p or the phone's native resolution.</li>
-            <li>Tap the picture to tap the phone: hit record, tap to focus, switch lenses.</li>
-            <li>Adapts to weak Wi-Fi by lowering the bitrate briefly instead of freezing.</li>
-          </ul>
+          <div class="base"></div>
+        </div>
+
+        <div class="dev ipad">
+          <div class="body">
+            <div class="screen">
+              <div class="viewer">
+                <div class="feed"><video src="img/live.mp4" poster="img/live-poster.jpg" muted loop playsinline autoplay preload="auto"></video><span class="tap"></span></div>
+                <span class="live">LIVE</span>
+              </div>
+            </div>
+          </div>
+          <span class="label"><b>iPad</b> · tap to record</span>
+        </div>
+
+        <div class="dev phone">
+          <div class="body">
+            <div class="screen">
+              <div class="feed"><video id="lead" src="img/live.mp4" poster="img/live-poster.jpg" muted loop playsinline autoplay preload="auto"></video></div>
+            </div>
+          </div>
+          <svg class="tripod" viewBox="0 0 160 90" aria-hidden="true">
+            <defs><linearGradient id="tg" x1="0" x2="1"><stop offset="0" stop-color="#1c1c1f"/><stop offset=".5" stop-color="#3a3a40"/><stop offset="1" stop-color="#1c1c1f"/></linearGradient></defs>
+            <rect x="62" y="0" width="36" height="9" rx="3" fill="url(#tg)"/>
+            <rect x="74" y="8" width="12" height="26" rx="2" fill="url(#tg)"/>
+            <circle cx="80" cy="36" r="8" fill="#2a2a2e"/>
+            <g stroke="#2a2a2e" stroke-width="7" stroke-linecap="round"><path d="M80 38 30 86"/><path d="M80 38 130 86"/><path d="M80 38v46" stroke="#202024"/></g>
+          </svg>
+          <span class="label"><b>Your Android phone</b> · the camera</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Demo -->
-  <section id="demo" class="demo">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">See it in action</span>
-        <h2>The watch mirrors the camera. A tap on the wrist starts the recording.</h2>
-      </div>
-      <div class="demo-frame">
-        <video src="img/demo.mp4" poster="img/demo-poster.jpg" width="1554" height="466"
-               autoplay muted loop playsinline controls preload="metadata"></video>
-      </div>
-      <p class="caption">Galaxy Z Fold running Samsung Camera (left), TicWatch Pro 5 (right). Real devices, not a mock-up.</p>
-    </div>
-  </section>
-
-  <!-- How it works -->
   <section>
     <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">How it works</span>
-        <h2>Three taps to a remote viewfinder.</h2>
+      <div class="head">
+        <h2>Stop walking back to check the shot.</h2>
+        <p>See your framing, focus and exposure from where you sit.</p>
       </div>
-      <div class="steps">
-        <div class="step">
-          <h3>Start a session</h3>
-          <p>From the watch (Photo, Video or Last-used mode) or from the phone app for a browser.
-             The phone opens your camera app.</p>
+      <div class="features">
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
+          <h3>Your real camera app</h3>
+          <p>Samsung Camera, Pixel Camera, Pro Video. Every lens and setting, untouched.</p>
         </div>
-        <div class="step">
-          <h3>Approve the share</h3>
-          <p>Android asks once per session to share the screen. Pick your camera app (or the
-             entire screen). Android requires this tap every time, by design.</p>
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V10m0-1.5a1.5 1.5 0 0 1 3 0V11m0-1a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.5a6 6 0 0 1-4.7-2.3L5 15.5a1.6 1.6 0 0 1 2.4-2.1L9 15"/></svg></div>
+          <h3>Tap to record</h3>
+          <p>Tap the picture on your iPad and it taps your phone. Record, focus, zoom.</p>
         </div>
-        <div class="step">
-          <h3>Frame and shoot</h3>
-          <p>The picture appears within a few seconds. Tap the shutter on the watch, or tap the
-             camera's own buttons in the browser.</p>
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+          <h3>Scan and watch</h3>
+          <p>No app on the viewer, no account. Your video never leaves your Wi‑Fi.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Install -->
-  <section id="install" style="padding-top: 0">
+  <section class="watch-sec">
     <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">Install · v1.1.0</span>
-        <h2>Get Remote Viewfinder.</h2>
-        <p>Free download from GitHub. The phone app is all you need for the browser viewer;
-           add the watch app for the wrist viewfinder.</p>
-      </div>
-
-      <div class="install">
-        <div class="panel">
-          <h3>1 · Phone</h3>
-          <ol>
-            <li><strong>Download the APK</strong> on your phone and open it. Allow your
-                browser to install apps when Android asks.</li>
-            <li>Open <strong>Remote Viewfinder</strong> and allow notifications.</li>
-            <li>For the watch shutter in Samsung Camera: <strong>Camera settings → Volume key
-                function → Take picture or record video</strong> (usually already set).</li>
-            <li>For tapping from the browser: tap <strong>Enable</strong> next to "Tap control"
-                in the app and turn Remote Viewfinder on. If Android says the setting is
-                restricted, open <strong>App info → ⋮ → Allow restricted settings</strong>
-                and try again.</li>
-          </ol>
-          <a class="btn btn-primary" href="https://github.com/js-commit/remote-viewfinder/releases/latest/download/remote-viewfinder-phone.apk">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
-            Phone APK
-          </a>
+      <div class="watch-card">
+        <div>
+          <span class="tag">Wear OS · optional</span>
+          <h2>Or keep it on your wrist.</h2>
+          <p>A live viewfinder and shutter on any Wear OS watch. Works away from Wi‑Fi.</p>
         </div>
-
-        <div class="panel">
-          <h3>2 · Watch <span style="color:var(--muted);font-weight:500">(optional)</span></h3>
-          <ol>
-            <li>On the watch, enable <strong>Developer options</strong> (tap Build number seven
-                times under Settings → System → About), then turn on <strong>ADB debugging</strong>
-                and <strong>Wireless debugging</strong>.</li>
-            <li>From a computer with <code>adb</code> on the same Wi-Fi, pair and install:
-<pre><code>adb pair &lt;watch-ip&gt;:&lt;pairing-port&gt;
-adb connect &lt;watch-ip&gt;:&lt;port&gt;
-adb install remote-viewfinder-watch.apk</code></pre>
-                Any Wear OS sideloading app works too.</li>
-            <li>Open it on the watch and allow Bluetooth. The status line reads
-                <strong>HID: connected</strong> when the shutter is linked to your phone.</li>
-          </ol>
-          <a class="btn btn-ghost" href="https://github.com/js-commit/remote-viewfinder/releases/latest/download/remote-viewfinder-watch.apk">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
-            Watch APK
-          </a>
-        </div>
+        <div class="watch"><div class="case"><img src="img/01-live-viewfinder.webp" width="1000" height="1000" alt="Wear OS watch showing the phone's camera preview with a shutter button" loading="lazy"></div></div>
       </div>
-
-      <div class="req">
-        <div><b>Phone</b><span>Android 11 or newer. Tested on a Galaxy Z Fold with Samsung Camera.</span></div>
-        <div><b>Watch</b><span>Wear OS 3 or newer, paired to the phone. Tested on a TicWatch Pro 5.</span></div>
-        <div><b>Browser</b><span>Any modern browser (Safari, Chrome) on the same Wi-Fi as the phone.</span></div>
-      </div>
-      <p class="fine">Phone and watch apps must come from the same release. All versions and
-        checksums are on the <a href="https://github.com/js-commit/remote-viewfinder/releases">releases page</a>.</p>
     </div>
   </section>
 
-  <!-- FAQ -->
-  <section id="faq" style="padding-top: 0">
-    <div class="wrap faq">
-      <div class="section-head">
-        <span class="eyebrow">Good to know</span>
-        <h2>Questions</h2>
-      </div>
-      <details>
-        <summary>Why does Android ask me to share my screen every time?</summary>
-        <p>Remote Viewfinder works by mirroring your camera app, and Android requires you to
-           approve screen sharing for every session. No app can skip or remember that prompt,
-           which is a good thing: nothing can quietly watch your screen.</p>
-      </details>
-      <details>
-        <summary>Can I use the watch and a browser at the same time?</summary>
-        <p>Not yet. Each session feeds one viewer: start from the watch for the wrist
-           viewfinder, or from the phone app for the browser.</p>
-      </details>
-      <details>
-        <summary>Does it work with my phone and camera app?</summary>
-        <p>It mirrors whatever camera app you choose, so the viewfinder works with any of
-           them. The watch shutter sends a volume-up press, which Samsung, Google and most
-           other camera apps treat as the shutter. It's developed and tested on a Samsung
-           Galaxy Z Fold.</p>
-      </details>
-      <details>
-        <summary>The watch shutter stopped responding during a session.</summary>
-        <p>A known issue on some watches: the Bluetooth shutter link can drop when a session
-           starts. Turning Bluetooth off and on on the watch restores it. A fix is in progress.</p>
-      </details>
-      <details>
-        <summary>The browser viewer won't load.</summary>
-        <p>The viewer is served by the phone itself, so both devices need to be on the same
-           Wi-Fi network and a browser session must be running on the phone. Open the exact
-           link the phone shows; it includes a private key.</p>
-      </details>
-      <details>
-        <summary>What about privacy?</summary>
-        <p>There's no account, no analytics, no ads and no server. Watch sessions travel over
-           the Bluetooth or Wi-Fi link between your own paired devices. The browser viewer is
-           a page hosted by your phone on your local network, protected by a private key in
-           its link. That link also allows tapping on the phone, so treat it like a password.
-           Your photos and videos are saved by your camera app as usual. Remote Viewfinder
-           never reads or stores them.</p>
-      </details>
-      <details>
-        <summary>Is it on Google Play?</summary>
-        <p>Not yet. The GitHub version is the complete one, including tapping from the
-           browser, and it installs as its own app, so it won't conflict with a Play Store
-           version later.</p>
-      </details>
-    </div>
-  </section>
-
-  <!-- CTA -->
   <section style="padding-top: 0">
     <div class="wrap">
-      <div class="cta">
-        <h2>Stop walking back to the camera.</h2>
-        <p>Free, no account, and it works with the camera app you already use.</p>
-        <div class="btn-row">
+      <div class="head"><h2>Rolling in three taps.</h2></div>
+      <div class="steps">
+        <div class="step"><h3>Start on your phone</h3><p>Open Remote Viewfinder and approve the screen share.</p></div>
+        <div class="step"><h3>Scan the QR code</h3><p>With your iPad, laptop or any browser on the same Wi‑Fi.</p></div>
+        <div class="step"><h3>Frame up and record</h3><p>Tap record on the big screen. Your phone saves the clip as usual.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="download" style="padding-top: 0">
+    <div class="wrap">
+      <div class="dl">
+        <h2>Free for Android.</h2>
+        <div class="cta">
           <a class="btn btn-primary" href="https://github.com/js-commit/remote-viewfinder/releases/latest/download/remote-viewfinder-phone.apk">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
-            Download for Android
+            Phone app
           </a>
-          <a class="btn btn-ghost" href="https://github.com/js-commit/remote-viewfinder/releases">All releases</a>
+          <a class="btn btn-ghost" href="https://github.com/js-commit/remote-viewfinder/releases/latest/download/remote-viewfinder-watch.apk">Watch app (optional)</a>
         </div>
+        <p class="fine">v1.1.0 · Android 11+ · Wear OS 3+ · <a href="https://github.com/js-commit/remote-viewfinder/releases">All releases</a></p>
+
+        <div class="help">
+          <details>
+            <summary>Install help</summary>
+            <h3>Phone</h3>
+            <ol>
+              <li>Open the APK on your phone and allow your browser to install apps.</li>
+              <li>For tap to record, tap <b>Enable</b> next to "Tap control" in the app. If Android says it's restricted, go to <b>App info → ⋮ → Allow restricted settings</b>.</li>
+              <li>For the watch shutter in Samsung Camera, set <b>Volume key function → Take picture or record video</b>.</li>
+            </ol>
+            <h3>Watch</h3>
+            <ol>
+              <li>Turn on <b>Developer options</b>, <b>ADB debugging</b> and <b>Wireless debugging</b> on the watch.</li>
+              <li>From a computer on the same Wi‑Fi:
+<pre>adb pair &lt;watch-ip&gt;:&lt;pairing-port&gt;
+adb connect &lt;watch-ip&gt;:&lt;port&gt;
+adb install remote-viewfinder-watch.apk</pre></li>
+              <li>Phone and watch apps must come from the same release.</li>
+            </ol>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top: 0">
+    <div class="wrap">
+      <div class="head"><h2>Questions</h2></div>
+      <div class="faq">
+        <details>
+          <summary>Why does Android ask to share my screen every time?</summary>
+          <p>Android requires it for every session, and no app can skip it. That's what keeps anything from quietly watching your screen.</p>
+        </details>
+        <details>
+          <summary>Does it work with my camera app?</summary>
+          <p>Yes. It mirrors whatever camera app you open. Built and tested on a Galaxy Z Fold with Samsung Camera.</p>
+        </details>
+        <details>
+          <summary>Is it private?</summary>
+          <p>No account, no cloud, no analytics. The viewer is served by your phone on your own Wi‑Fi, behind a private link. Treat that link like a password, since it can tap your phone.</p>
+        </details>
+        <details>
+          <summary>The viewer won't load.</summary>
+          <p>Put both devices on the same Wi‑Fi and open the exact link or QR code the phone shows.</p>
+        </details>
+        <details>
+          <summary>The watch shutter stopped responding.</summary>
+          <p>A known issue on some watches. Turn the watch's Bluetooth off and on to restore it. A fix is on the way.</p>
+        </details>
       </div>
     </div>
   </section>
@@ -546,14 +489,60 @@ adb install remote-viewfinder-watch.apk</code></pre>
   <div class="wrap foot">
     <span>© 2026 Remote Viewfinder</span>
     <nav>
-      <a href="#how">How it works</a>
-      <a href="#install">Install</a>
-      <a href="#faq">FAQ</a>
       <a href="https://github.com/js-commit/remote-viewfinder/releases">Releases</a>
       <a href="https://github.com/js-commit/remote-viewfinder/issues">Report a problem</a>
     </nav>
   </div>
 </footer>
 
+<script>
+  // Keep the three screens in lockstep, and show a tap on the iPad when recording starts and stops.
+  (function () {
+    var lead = document.getElementById('lead');
+    var stage = document.querySelector('.stage');
+    var vids = Array.prototype.slice.call(stage.querySelectorAll('video'));
+    var others = vids.filter(function (v) { return v !== lead; });
+    var tap = stage.querySelector('.tap');
+    var marks = [{ t: 4.4, y: '50%' }, { t: 9.2, y: '57%' }];
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var stopped = false, visible = true;
+
+    function play(v) { var p = v.play(); if (p) p.catch(function () {}); }
+    function sync() {
+      if (stopped || !visible) { vids.forEach(function (v) { v.pause(); }); return; }
+      vids.forEach(play);
+    }
+
+    // Click the devices to pause or resume the demo.
+    stage.addEventListener('click', function () { stopped = !stopped; sync(); });
+
+    setInterval(function () {
+      if (lead.paused) return;
+      others.forEach(function (v) {
+        if (Math.abs(v.currentTime - lead.currentTime) > 0.15) v.currentTime = lead.currentTime;
+        if (v.paused) play(v);
+      });
+    }, 500);
+
+    if (!still) {
+      var prev = 0;
+      (function tick() {
+        var t = lead.currentTime;
+        marks.forEach(function (m) {
+          if (prev < m.t && t >= m.t) {
+            tap.style.top = m.y;
+            tap.classList.remove('on'); void tap.offsetWidth; tap.classList.add('on');
+          }
+        });
+        prev = t;
+        requestAnimationFrame(tick);
+      })();
+    }
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (e) { visible = e[0].isIntersecting; sync(); }).observe(stage);
+    }
+  })();
+</script>
 </body>
 </html>

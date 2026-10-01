@@ -1,13 +1,12 @@
 # Remote Viewfinder
 
-**See your phone's camera from across the room.** Remote Viewfinder puts your phone's own
-camera app, live, on your Wear OS watch or on any browser on your Wi-Fi. Frame the shot,
-check yourself in it, and hit record without walking back to the phone.
+**Any screen is your camera monitor.** Film yourself with your Android phone and watch the
+shot live on your iPad, laptop or any browser on your Wi-Fi. Tap the picture to hit record.
 
 ### [⬇️ Download for Android](https://github.com/js-commit/remote-viewfinder/releases/latest) · [Website](https://js-commit.github.io/remote-viewfinder/)
 
 <p align="center">
-  <img src="img/01-live-on-your-wrist.webp" alt="Samsung Camera on a Galaxy Z Fold, mirrored live on a Wear OS watch" width="720">
+  <img src="img/social-preview.jpg" alt="An Android phone running its camera app, mirrored live on an iPad and a laptop" width="720">
 </p>
 
 ## Why it's different
