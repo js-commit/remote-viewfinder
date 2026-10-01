@@ -1,12 +1,12 @@
 # Remote Viewfinder
 
 **Any screen is your camera monitor.** Film yourself with your Android phone and watch the
-shot live on your iPad, laptop or any browser on your Wi-Fi. Tap the picture to hit record.
+shot live on your iPad, laptop, Wear OS watch or any browser on your Wi-Fi. Tap to hit record.
 
 ### [⬇️ Download for Android](https://github.com/js-commit/remote-viewfinder/releases/latest) · [Website](https://js-commit.github.io/remote-viewfinder/)
 
 <p align="center">
-  <img src="img/social-preview.jpg" alt="An Android phone running its camera app, mirrored live on an iPad and a laptop" width="720">
+  <img src="img/social-preview.jpg" alt="An Android phone running its camera app, mirrored live on a laptop, an iPad and a Wear OS watch" width="720">
 </p>
 
 ## Why it's different
