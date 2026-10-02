@@ -219,6 +219,13 @@
   }
   .scene svg { display: block; width: 100%; height: auto; }
 
+  /* Real recording */
+  .demo-video {
+    margin: 48px 0 0; border-radius: 24px; overflow: hidden; background: #000;
+    border: 1px solid var(--line); box-shadow: 0 40px 100px -30px rgba(255,150,0,.25);
+  }
+  .demo-video video { width: 100%; aspect-ratio: 16 / 9; }
+
   /* Features */
   .head { max-width: 40rem; }
   .head p { color: var(--muted); font-size: 1.15rem; margin: 18px 0 0; }
@@ -314,6 +321,7 @@
     .feature { padding: 24px; }
     .scene { border-radius: 24px; padding: 12px 6px 4px; }
     .dl { padding: 64px 20px; border-radius: 28px; }
+    .demo-video { margin-top: 32px; border-radius: 14px; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -468,6 +476,22 @@
           </g>
           <circle cx="492" cy="318" r="8" fill="#52525b"/>
         </svg>
+      </figure>
+    </div>
+  </section>
+
+  <section style="padding-top: 0">
+    <div class="wrap">
+      <div class="head">
+        <span class="tag">Real recording</span>
+        <h2>Watch it work.</h2>
+        <p>A Galaxy Z Fold running Samsung Camera, streamed live to a browser on the same Wi‑Fi. Start, frame, Stop.</p>
+      </div>
+      <figure class="demo-video">
+        <video controls playsinline muted preload="metadata" poster="img/browser-demo-poster.jpg" aria-label="Screen recording: the phone starts a session, its camera app appears live in a browser, and Stop ends it">
+          <source src="img/browser-demo.mp4" type='video/mp4; codecs="hvc1.1.6.L120.90"'>
+          <source src="img/browser-demo-h264.mp4" type="video/mp4">
+        </video>
       </figure>
     </div>
   </section>
